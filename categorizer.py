@@ -5,132 +5,90 @@ class ArticleCategorizer:
     """Categorizes articles based on intelligent keyword matching with word boundaries"""
 
     # High-priority keywords that strongly indicate a category
-    # Using word boundaries to avoid false matches like "ai" in "laid", "said", etc.
     PRIORITY_KEYWORDS = {
         'AI': [
-            # Company names and products (strong indicators)
-            r'\bchatgpt\b', r'\bopenai\b', r'\banthropic\b', r'\bclaude ai\b',
-            r'\bgemini ai\b', r'\bcopilot ai\b', r'\bgpt-4\b', r'\bgpt-5\b',
-            r'\bdeepseek\b', r'\bdeepmind\b', r'\bmeta ai\b',
+            # AI company names and products (very strong indicators)
+            r'\bchatgpt\b', r'\bopenai\b', r'\banthropic\b', r'\bclaude\b',
+            r'\bgemini\b', r'\bcopilot\b', r'\bgpt-4\b', r'\bgpt-5\b',
+            r'\bdeepseek\b', r'\bdeepmind\b', r'\bllm\b', r'\bllms\b',
 
-            # Technical AI terms (specific)
-            r'\bllm\b', r'\bllms\b', r'\blarge language model\b',
-            r'\bgenerative ai\b', r'\bdeep learning\b', r'\bneural network\b',
-            r'\bmachine learning model\b', r'\bai model\b', r'\bai system\b',
-            r'\blanguage model\b', r'\btransformer model\b',
-
-            # AI in specific contexts (compound phrases)
-            r'\bartificial intelligence\b', r'\bai chip\b', r'\bai training\b',
-            r'\bai startup\b', r'\bai regulation\b', r'\bai safety\b'
+            # Core AI concepts (compound only to avoid false positives)
+            r'\bartificial intelligence\b', r'\blarge language model\b',
+            r'\bgenerative ai\b', r'\bmachine learning\b', r'\bdeep learning\b',
+            r'\bneural network\b', r'\btransformer model\b'
         ],
         'Economy': [
-            # Financial institutions
-            r'\bfederal reserve\b', r'\bfed rate\b', r'\bcentral bank\b',
-            r'\bwall street\b', r'\btreasury\b', r'\bsec \b', r'\bs&p 500\b',
-
-            # Markets and indices
-            r'\bstock market\b', r'\bdow jones\b', r'\bnasdaq\b',
-            r'\bnyse\b', r'\bbull market\b', r'\bbear market\b',
-
-            # Economic indicators
-            r'\binflation rate\b', r'\binterest rate\b', r'\bunemployment rate\b',
-            r'\bgdp growth\b', r'\bjobs report\b', r'\bconsumer price\b',
-            r'\bbond yield\b', r'\btrade deficit\b',
-
-            # Corporate finance
-            r'\bipo\b', r'\bmerger\b', r'\bacquisition\b', r'\bearnings report\b',
-            r'\bquarterly results\b', r'\bventure capital\b'
+            # Major financial institutions and terms
+            r'\bfederal reserve\b', r'\bfed\b', r'\bwall street\b',
+            r'\bdow jones\b', r'\bnasdaq\b', r'\bs&p 500\b',
+            r'\bstock market\b', r'\bipo\b', r'\bearnings\b',
+            r'\binflation\b', r'\brecession\b', r'\bgdp\b',
+            r'\bbitcoin\b', r'\bethereum\b', r'\bcrypto\b',
+            r'\bventure capital\b', r'\bstartup\b', r'\bmerger\b'
         ],
         'Politics': [
-            # Government institutions
+            # Government and political terms
             r'\bwhite house\b', r'\bcongress\b', r'\bsenate\b',
-            r'\bhouse of representatives\b', r'\bsupreme court\b',
-            r'\bstate department\b', r'\bpentagon\b',
-
-            # Political events
-            r'\bpresidential election\b', r'\bcampaign trail\b',
-            r'\belection 2024\b', r'\belection 2026\b', r'\bballot\b',
-
-            # Political actions
-            r'\blegislation\b', r'\bbill passes\b', r'\bveto\b',
-            r'\bimpeachment\b', r'\bfilibuster\b', r'\bhearing\b',
-
-            # International politics
-            r'\bforeign policy\b', r'\bsanctions\b', r'\btreaty\b',
-            r'\bunited nations\b', r'\bnato\b'
+            r'\bsupreme court\b', r'\bpresident\b', r'\bpresidential\b',
+            r'\belection\b', r'\bcampaign\b', r'\blegislation\b',
+            r'\bnato\b', r'\bunited nations\b', r'\bpentagon\b'
         ]
     }
 
-    # Regular keywords for additional matching with word boundaries
+    # Regular keywords - broader terms that support categorization
     CATEGORIES = {
         'AI': [
-            # AI-specific terms (safe from false positives)
-            r'\bchatbot\b', r'\bcomputer vision\b', r'\bnatural language processing\b',
-            r'\bnlp model\b', r'\brobotics ai\b', r'\bautonomous vehicle\b',
-            r'\bneural net\b', r'\bmachine learning\b',
-
-            # AI companies and products
-            r'\bhugging face\b', r'\bstable diffusion\b', r'\bmidjourney\b',
-            r'\bdall-e\b', r'\bnvidia ai\b', r'\bmicrosoft ai\b',
-
-            # AI concepts
-            r'\bai ethics\b', r'\bai bias\b', r'\bai alignment\b',
-            r'\bai hallucination\b', r'\bprompt engineering\b',
-            r'\bdiffusion model\b', r'\bfoundation model\b'
+            # AI terms (using word boundaries but more permissive)
+            r'\b(?:ai|a\.i\.)\b(?:\s+(?:model|system|chip|tech|tool|bot|software|platform|startup|company))?',
+            r'\bchatbot\b', r'\brobot(?:ics)?\b', r'\bautomation\b',
+            r'\bcomputer vision\b', r'\bneural\b', r'\balgorithm\b',
+            r'\b(?:nvidia|microsoft|google|meta)\s+ai\b',
+            r'\bai\s+(?:regulation|safety|ethics|bias|model|chip|training|startup)\b'
         ],
         'Economy': [
-            # Financial terms (with boundaries to avoid false matches)
-            r'\bstock price\b', r'\bshare price\b', r'\btrading volume\b',
-            r'\bmarket cap\b', r'\bmarket capitalization\b',
-
-            # Crypto (specific)
-            r'\bbitcoin\b', r'\bethereum\b', r'\bcryptocurrency\b',
-            r'\bcrypto market\b', r'\bcrypto exchange\b',
-
-            # Business/Finance
-            r'\bhedge fund\b', r'\bprivate equity\b', r'\bfunding round\b',
-            r'\bvaluation\b', r'\bbankruptcy filing\b', r'\brecession\b',
-
-            # Commodities
-            r'\boil price\b', r'\bgold price\b', r'\bcommodity\b',
-
-            # Currency
-            r'\bdollar index\b', r'\beuro\b', r'\byuan\b', r'\bforex\b',
-
-            # Economic policy
-            r'\bmonetary policy\b', r'\bfiscal policy\b', r'\btax policy\b'
+            # Business and finance terms
+            r'\bmarket(?:s)?\b', r'\bstock(?:s)?\b', r'\bshare(?:s)?\b',
+            r'\btrading\b', r'\binvestor(?:s)?\b', r'\binvestment\b',
+            r'\bfinancial\b', r'\bbusiness\b', r'\bcorporate\b',
+            r'\beconomic\b', r'\beconomy\b', r'\bbanking\b',
+            r'\bcryptocurrency\b', r'\bfunding\b', r'\bvaluation\b'
         ],
         'Politics': [
-            # Political figures and parties
+            # Political terms
+            r'\bpolitical\b', r'\bpolitics\b', r'\bgovernment\b',
             r'\bsenator\b', r'\bcongressman\b', r'\bcongresswoman\b',
             r'\brepresentative\b', r'\bgovernor\b', r'\bmayor\b',
-            r'\bdemocrat\b', r'\brepublican\b', r'\bbipartisan\b',
-
-            # Political processes
-            r'\bvoting\b', r'\bprimary election\b', r'\bgeneral election\b',
-            r'\bpolitical campaign\b', r'\bpoll\b', r'\bpolitical party\b',
-
-            # Government agencies
-            r'\bfbi\b', r'\bcia\b', r'\bfema\b', r'\bepa\b',
-
-            # Legal/Judicial
-            r'\battorney general\b', r'\bjudge\b', r'\bcourt ruling\b',
-            r'\bjustice\b',
-
-            # International
-            r'\bambassador\b', r'\bsummit\b', r'\bdiplomacy\b',
-            r'\bdiplomatic\b', r'\bgeopolitical\b'
+            r'\bdemocrat\b', r'\brepublican\b', r'\bvot(?:e|ing)\b',
+            r'\bpolicy\b', r'\blaw\b', r'\bcourt\b', r'\bjudge\b'
         ]
     }
 
-    # Excluded patterns - terms that often cause false positives
+    # Only exclude for AI category and only if no other AI context exists
     EXCLUDE_PATTERNS = {
         'AI': [
-            r'\bdaily\b', r'\blaid\b', r'\bpaid\b', r'\bsaid\b',
-            r'\bwait\b', r'\bchain\b', r'\btrain\b', r'\brain\b',
-            r'\bgain\b', r'\bmain\b', r'\bpain\b'
+            r'\b(?:daily|laid|paid|said|wait|train|rain|gain|main|pain)\b'
         ]
     }
+
+    def _has_ai_exclusion(self, text):
+        """Check if text has AI exclusion patterns without AI context"""
+        # Check for excluded words
+        has_exclusion = any(re.search(pattern, text, re.IGNORECASE)
+                           for pattern in self.EXCLUDE_PATTERNS['AI'])
+
+        if not has_exclusion:
+            return False
+
+        # If we have exclusions, check if there's any AI context
+        # If there are priority AI keywords, ignore the exclusion
+        has_ai_context = any(re.search(pattern, text, re.IGNORECASE)
+                            for pattern in self.PRIORITY_KEYWORDS['AI'])
+
+        # Also check for compound AI phrases in regular keywords
+        has_ai_compound = bool(re.search(r'\bai\s+(?:model|system|chip|tech|tool|startup|company)\b',
+                                        text, re.IGNORECASE))
+
+        return not (has_ai_context or has_ai_compound)
 
     def categorize(self, article):
         """Categorize a single article with intelligent pattern matching"""
@@ -138,50 +96,40 @@ class ArticleCategorizer:
         description = article['description'].lower()
         text = f"{title} {description}"
 
-        # Calculate scores with priority weighting
         scores = {}
+
         for category in self.CATEGORIES.keys():
             score = 0
 
-            # Check for excluded patterns first (for AI category)
-            if category in self.EXCLUDE_PATTERNS:
-                excluded = False
-                for exclude_pattern in self.EXCLUDE_PATTERNS[category]:
-                    if re.search(exclude_pattern, text, re.IGNORECASE):
-                        # If we find excluded terms, check if there are strong AI indicators
-                        # Only exclude if there are no priority keywords
-                        priority_matches = sum(1 for kw in self.PRIORITY_KEYWORDS.get(category, [])
-                                             if re.search(kw, text, re.IGNORECASE))
-                        if priority_matches == 0:
-                            excluded = True
-                            break
+            # Skip AI category if we have exclusion patterns without AI context
+            if category == 'AI' and self._has_ai_exclusion(text):
+                scores[category] = 0
+                continue
 
-                if excluded:
-                    continue
-
-            # Priority keywords get 3x weight (using regex with word boundaries)
+            # Priority keywords get higher weight
             for keyword_pattern in self.PRIORITY_KEYWORDS.get(category, []):
                 matches = len(re.findall(keyword_pattern, text, re.IGNORECASE))
                 if matches > 0:
-                    # Check if in title for extra weight
                     title_matches = len(re.findall(keyword_pattern, title, re.IGNORECASE))
-                    score += (6 * title_matches) + (3 * (matches - title_matches))
+                    # Priority: 5 points base, 10 if in title
+                    score += (10 * title_matches) + (5 * (matches - title_matches))
 
-            # Regular keywords get 1x weight (using regex with word boundaries)
+            # Regular keywords
             for keyword_pattern in self.CATEGORIES[category]:
                 matches = len(re.findall(keyword_pattern, text, re.IGNORECASE))
                 if matches > 0:
-                    # Check if in title for extra weight
                     title_matches = len(re.findall(keyword_pattern, title, re.IGNORECASE))
-                    score += (2 * title_matches) + (1 * (matches - title_matches))
+                    # Regular: 2 points base, 4 if in title
+                    score += (4 * title_matches) + (2 * (matches - title_matches))
 
             scores[category] = score
 
-        # Find category with highest score
+        # Find highest score
         max_score = max(scores.values())
 
-        # Require minimum score of 3 to avoid weak matches (increased from 2)
-        if max_score >= 3:
+        # Much lower threshold - just need SOME evidence
+        if max_score >= 2:
+            # Return highest scoring category
             for category, score in scores.items():
                 if score == max_score:
                     return category
