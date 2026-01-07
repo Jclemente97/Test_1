@@ -35,10 +35,11 @@ class FetchThread(QThread):
 class ArticleWidget(QFrame):
     """Widget for displaying a single article"""
 
-    def __init__(self, article, reading_list_manager, parent=None):
+    def __init__(self, article, reading_list_manager, refresh_callback=None, parent=None):
         super().__init__(parent)
         self.article = article
         self.reading_list = reading_list_manager
+        self.refresh_callback = refresh_callback
 
         self.setFrameStyle(QFrame.Shape.Box | QFrame.Shadow.Raised)
         self.setLineWidth(2)
@@ -182,6 +183,9 @@ class ArticleWidget(QFrame):
                 if 'Daily' in child.text():
                     child.setText('✓ In Daily List')
                     child.setEnabled(False)
+            # Refresh reading list tabs
+            if self.refresh_callback:
+                self.refresh_callback()
 
     def add_to_weekly(self):
         if self.reading_list.add_to_weekly(self.article):
@@ -191,15 +195,19 @@ class ArticleWidget(QFrame):
                 if 'Weekly' in child.text():
                     child.setText('✓ In Weekly List')
                     child.setEnabled(False)
+            # Refresh reading list tabs
+            if self.refresh_callback:
+                self.refresh_callback()
 
 
 class CategoryTab(QWidget):
     """Tab widget for a specific category"""
 
-    def __init__(self, category_name, reading_list_manager):
+    def __init__(self, category_name, reading_list_manager, refresh_callback=None):
         super().__init__()
         self.category_name = category_name
         self.reading_list = reading_list_manager
+        self.refresh_callback = refresh_callback
         self.articles = []
 
         layout = QVBoxLayout()
@@ -239,7 +247,7 @@ class CategoryTab(QWidget):
             self.container_layout.addWidget(no_articles)
         else:
             for article in articles:
-                article_widget = ArticleWidget(article, self.reading_list)
+                article_widget = ArticleWidget(article, self.reading_list, self.refresh_callback)
                 self.container_layout.addWidget(article_widget)
 
         self.container_layout.addStretch()
@@ -361,6 +369,13 @@ class NewsAggregatorApp(QMainWindow):
 
         self.init_ui()
 
+    def refresh_reading_lists(self):
+        """Refresh both daily and weekly reading list tabs"""
+        if hasattr(self, 'daily_list_tab'):
+            self.daily_list_tab.refresh()
+        if hasattr(self, 'weekly_list_tab'):
+            self.weekly_list_tab.refresh()
+
     def init_ui(self):
         """Initialize the user interface"""
         self.setWindowTitle('📰 The Daily Digest - News Aggregator')
@@ -466,10 +481,10 @@ class NewsAggregatorApp(QMainWindow):
         self.tabs = QTabWidget()
 
         # Category tabs
-        self.ai_tab = CategoryTab('AI', self.reading_list)
-        self.economy_tab = CategoryTab('Economy', self.reading_list)
-        self.politics_tab = CategoryTab('Politics', self.reading_list)
-        self.other_tab = CategoryTab('Other', self.reading_list)
+        self.ai_tab = CategoryTab('AI', self.reading_list, self.refresh_reading_lists)
+        self.economy_tab = CategoryTab('Economy', self.reading_list, self.refresh_reading_lists)
+        self.politics_tab = CategoryTab('Politics', self.reading_list, self.refresh_reading_lists)
+        self.other_tab = CategoryTab('Other', self.reading_list, self.refresh_reading_lists)
 
         self.tabs.addTab(self.ai_tab, '🤖 AI')
         self.tabs.addTab(self.economy_tab, '💰 Economy')
