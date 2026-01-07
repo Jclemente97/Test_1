@@ -76,19 +76,30 @@ python news_aggregator.py
 The app fetches RSS/Atom feeds from multiple news sources using HTTP requests and XML parsing. It supports both RSS 2.0 and Atom formats.
 
 ### Categorization
-Articles are automatically categorized using an intelligent keyword matching system with priority weighting:
+Articles are automatically categorized using an **intelligent pattern matching system** with several advanced features:
 
-**Priority Keywords** (3x weight): Strong indicators like "ChatGPT", "Federal Reserve", "White House"
-**Regular Keywords** (1x weight): General terms like "ai", "market", "politics"
-**Title Boost** (2x multiplier): Keywords found in titles are weighted more heavily
+**Word Boundary Matching**: Uses regex word boundaries (`\b`) to prevent false matches:
+- "ai" only matches as a complete word, not in "laid", "said", "daily", "paid"
+- "market" must be standalone, not in "marketing" or "supermarket"
+- Prevents categorization errors from partial word matches
 
-Categories:
-- **AI**: ChatGPT, LLMs, machine learning, neural networks, AI companies (OpenAI, Anthropic, etc.)
-- **Economy**: Stock market, Federal Reserve, inflation, GDP, earnings, crypto, venture capital
-- **Politics**: Congress, White House, elections, legislation, Supreme Court, foreign policy
-- **Other**: Everything else (general news, science, culture, sports, etc.)
+**Exclusion Patterns**: Actively filters out known false positives:
+- Articles containing "daily", "laid", "said" without AI context → Not categorized as AI
+- Requires strong priority keywords to override exclusions
 
-The system requires a minimum score to avoid weak categorization, ensuring articles are only categorized when there's strong evidence.
+**Priority Weighting System**:
+- **Priority Keywords** (3x weight): Strong indicators like "ChatGPT", "Federal Reserve", "White House"
+- **Regular Keywords** (1x weight): Compound phrases like "ai chip", "stock market", "senate hearing"
+- **Title Boost** (2x multiplier): Keywords in titles weighted more heavily than descriptions
+- **Minimum Score** (3 points): Requires significant evidence to categorize
+
+**Category Keywords**:
+- **AI**: ChatGPT, OpenAI, Anthropic, LLMs, neural networks, machine learning, AI companies
+- **Economy**: Federal Reserve, stock market, inflation, GDP, earnings, crypto, venture capital, mergers
+- **Politics**: Congress, White House, Supreme Court, elections, legislation, foreign policy, NATO
+- **Other**: Everything else (general news, science, culture, sports, weather, etc.)
+
+**Smart Context Detection**: The system counts multiple keyword matches and requires a minimum combined score, ensuring articles are only categorized when there's strong, unambiguous evidence.
 
 ### Reading Lists
 Reading lists are stored in a local JSON file (`reading_lists.json`) and persist between sessions. You can add articles to either daily or weekly lists for later reading.
