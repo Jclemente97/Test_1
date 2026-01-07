@@ -76,30 +76,41 @@ python news_aggregator.py
 The app fetches RSS/Atom feeds from multiple news sources using HTTP requests and XML parsing. It supports both RSS 2.0 and Atom formats.
 
 ### Categorization
-Articles are automatically categorized using an **intelligent pattern matching system** with several advanced features:
+Articles are automatically categorized using a **comprehensive keyword matching system** with intelligent filtering:
 
-**Word Boundary Matching**: Uses regex word boundaries (`\b`) to prevent false matches:
-- "ai" only matches as a complete word, not in "laid", "said", "daily", "paid"
-- "market" must be standalone, not in "marketing" or "supermarket"
-- Prevents categorization errors from partial word matches
+**Extensive Keyword Lists**: Each category has 50+ carefully chosen keywords:
 
-**Exclusion Patterns**: Actively filters out known false positives:
-- Articles containing "daily", "laid", "said" without AI context → Not categorized as AI
-- Requires strong priority keywords to override exclusions
+**AI Category** (~60 keywords):
+- Companies: OpenAI, Anthropic, DeepMind, Meta AI, Google AI, Microsoft AI, Hugging Face
+- Products: ChatGPT, GPT-4, Claude, Gemini, Copilot, DALL-E, Midjourney
+- Technologies: machine learning, deep learning, neural networks, LLMs, transformers
+- Applications: chatbots, computer vision, NLP, autonomous vehicles, robotics
+- Concepts: AI safety, AI ethics, AI regulation, prompt engineering
 
-**Priority Weighting System**:
-- **Priority Keywords** (3x weight): Strong indicators like "ChatGPT", "Federal Reserve", "White House"
-- **Regular Keywords** (1x weight): Compound phrases like "ai chip", "stock market", "senate hearing"
-- **Title Boost** (2x multiplier): Keywords in titles weighted more heavily than descriptions
-- **Minimum Score** (3 points): Requires significant evidence to categorize
+**Economy Category** (~90 keywords):
+- Institutions: Federal Reserve, Wall Street, Treasury, SEC, central banks
+- Markets: stock market, Dow Jones, NASDAQ, S&P 500, NYSE
+- Indicators: inflation, recession, GDP, unemployment, interest rates, CPI
+- Finance: earnings, IPO, mergers, acquisitions, venture capital
+- Crypto: Bitcoin, Ethereum, blockchain, DeFi, NFT
+- Terms: stocks, shares, trading, investors, commodities, currencies
 
-**Category Keywords**:
-- **AI**: ChatGPT, OpenAI, Anthropic, LLMs, neural networks, machine learning, AI companies
-- **Economy**: Federal Reserve, stock market, inflation, GDP, earnings, crypto, venture capital, mergers
-- **Politics**: Congress, White House, Supreme Court, elections, legislation, foreign policy, NATO
-- **Other**: Everything else (general news, science, culture, sports, weather, etc.)
+**Politics Category** (~70 keywords):
+- Institutions: White House, Congress, Senate, Supreme Court, Pentagon
+- Positions: president, senator, governor, cabinet members
+- Parties: Democrat, Republican, GOP, bipartisan
+- Elections: campaign, ballot, voting, polls, primary
+- Actions: legislation, veto, impeachment, hearings
+- International: NATO, UN, foreign policy, sanctions, diplomacy
 
-**Smart Context Detection**: The system counts multiple keyword matches and requires a minimum combined score, ensuring articles are only categorized when there's strong, unambiguous evidence.
+**Smart Features**:
+- **Word Boundaries**: Prevents false matches ("ai" won't match in "daily", "said", "laid")
+- **Exclusion Patterns**: Filters out common false positives for AI category
+- **Title Weighting**: Keywords in titles get 3x weight vs description (1x)
+- **Context Checking**: AI exclusions overridden by strong AI context
+- **Minimum Score**: Requires score ≥2 to categorize, ensuring meaningful matches
+
+The comprehensive keyword lists ensure accurate categorization while maintaining high precision.
 
 ### Reading Lists
 Reading lists are stored in a local JSON file (`reading_lists.json`) and persist between sessions. You can add articles to either daily or weekly lists for later reading.
