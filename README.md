@@ -4,7 +4,7 @@ A beautiful desktop GUI application for aggregating news from multiple sources w
 
 ## Features
 
-- **Multi-Source RSS Feeds**: Fetches articles from NYT Business, NYT US, NYT Tech, WSJ US Business, WSJ Politics, Bloomberg, Axios, The Verge, Wired, TechCrunch, and Reuters
+- **Multi-Source RSS Feeds**: Fetches articles from NYT (Business, Technology, Politics), WSJ (World News, Markets, Opinion), TechCrunch, The Verge, Wired, Ars Technica, Reuters, BBC News, CNN, and NPR
 - **Automatic Categorization**: Smart keyword-based categorization into AI, Economy, Politics, and Other
 - **Reading Lists**: Save articles to Daily or Weekly reading lists
 - **24-Hour Filter**: Only shows articles from the last 24 hours
@@ -76,11 +76,19 @@ python news_aggregator.py
 The app fetches RSS/Atom feeds from multiple news sources using HTTP requests and XML parsing. It supports both RSS 2.0 and Atom formats.
 
 ### Categorization
-Articles are automatically categorized using keyword matching:
-- **AI**: artificial intelligence, machine learning, neural networks, ChatGPT, etc.
-- **Economy**: markets, stocks, inflation, GDP, business, finance, etc.
-- **Politics**: elections, congress, government, policies, legislation, etc.
-- **Other**: Everything else
+Articles are automatically categorized using an intelligent keyword matching system with priority weighting:
+
+**Priority Keywords** (3x weight): Strong indicators like "ChatGPT", "Federal Reserve", "White House"
+**Regular Keywords** (1x weight): General terms like "ai", "market", "politics"
+**Title Boost** (2x multiplier): Keywords found in titles are weighted more heavily
+
+Categories:
+- **AI**: ChatGPT, LLMs, machine learning, neural networks, AI companies (OpenAI, Anthropic, etc.)
+- **Economy**: Stock market, Federal Reserve, inflation, GDP, earnings, crypto, venture capital
+- **Politics**: Congress, White House, elections, legislation, Supreme Court, foreign policy
+- **Other**: Everything else (general news, science, culture, sports, etc.)
+
+The system requires a minimum score to avoid weak categorization, ensuring articles are only categorized when there's strong evidence.
 
 ### Reading Lists
 Reading lists are stored in a local JSON file (`reading_lists.json`) and persist between sessions. You can add articles to either daily or weekly lists for later reading.

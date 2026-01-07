@@ -10,22 +10,27 @@ class RSSFetcher:
     """Fetches and parses RSS feeds from multiple news sources"""
 
     FEEDS = {
-        # New York Times Feeds
+        # New York Times Feeds (using working RSS patterns)
         'NYT Business': 'https://rss.nytimes.com/services/xml/rss/nyt/Business.xml',
-        'NYT US': 'https://rss.nytimes.com/services/xml/rss/nyt/US.xml',
-        'NYT Tech': 'https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml',
+        'NYT Technology': 'https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml',
+        'NYT Politics': 'https://rss.nytimes.com/services/xml/rss/nyt/Politics.xml',
 
-        # Wall Street Journal Feeds
-        'WSJ US Business': 'https://feeds.a.dj.com/rss/WSJcomUSBusiness.xml',
-        'WSJ Politics': 'https://feeds.a.dj.com/rss/RSSPolitics.xml',
+        # Wall Street Journal Feeds (using reliable DJ feeds)
+        'WSJ World News': 'https://feeds.a.dj.com/rss/RSSWorldNews.xml',
+        'WSJ Markets': 'https://feeds.a.dj.com/rss/RSSMarketsMain.xml',
+        'WSJ Opinion': 'https://feeds.a.dj.com/rss/RSSOpinion.xml',
 
-        # Other Sources
-        'Bloomberg': 'https://feeds.bloomberg.com/markets/news.rss',
-        'Axios': 'https://api.axios.com/feed/',
+        # Tech News Sources
+        'TechCrunch': 'https://techcrunch.com/feed/',
         'The Verge': 'https://www.theverge.com/rss/index.xml',
         'Wired': 'https://www.wired.com/feed/rss',
-        'TechCrunch': 'https://techcrunch.com/feed/',
-        'Reuters': 'https://www.reutersagency.com/feed/?taxonomy=best-topics&post_type=best'
+        'Ars Technica': 'https://feeds.arstechnica.com/arstechnica/index',
+
+        # General News & Business
+        'Reuters World': 'https://www.reutersagency.com/feed/?best-topics=tech&post_type=best',
+        'BBC News': 'https://feeds.bbci.co.uk/news/rss.xml',
+        'CNN Top Stories': 'http://rss.cnn.com/rss/cnn_topstories.rss',
+        'NPR News': 'https://feeds.npr.org/1001/rss.xml'
     }
 
     def __init__(self):
