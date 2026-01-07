@@ -10,8 +10,16 @@ class RSSFetcher:
     """Fetches and parses RSS feeds from multiple news sources"""
 
     FEEDS = {
-        'NYT': 'https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml',
-        'WSJ': 'https://feeds.a.dj.com/rss/RSSWorldNews.xml',
+        # New York Times Feeds
+        'NYT Business': 'https://rss.nytimes.com/services/xml/rss/nyt/Business.xml',
+        'NYT US': 'https://rss.nytimes.com/services/xml/rss/nyt/US.xml',
+        'NYT Tech': 'https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml',
+
+        # Wall Street Journal Feeds
+        'WSJ US Business': 'https://feeds.a.dj.com/rss/WSJcomUSBusiness.xml',
+        'WSJ Politics': 'https://feeds.a.dj.com/rss/RSSPolitics.xml',
+
+        # Other Sources
         'Bloomberg': 'https://feeds.bloomberg.com/markets/news.rss',
         'Axios': 'https://api.axios.com/feed/',
         'The Verge': 'https://www.theverge.com/rss/index.xml',

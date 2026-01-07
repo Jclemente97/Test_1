@@ -4,7 +4,7 @@ A beautiful desktop GUI application for aggregating news from multiple sources w
 
 ## Features
 
-- **Multi-Source RSS Feeds**: Fetches articles from NYT, WSJ, Bloomberg, Axios, The Verge, Wired, TechCrunch, and Reuters
+- **Multi-Source RSS Feeds**: Fetches articles from NYT Business, NYT US, NYT Tech, WSJ US Business, WSJ Politics, Bloomberg, Axios, The Verge, Wired, TechCrunch, and Reuters
 - **Automatic Categorization**: Smart keyword-based categorization into AI, Economy, Politics, and Other
 - **Reading Lists**: Save articles to Daily or Weekly reading lists
 - **24-Hour Filter**: Only shows articles from the last 24 hours
